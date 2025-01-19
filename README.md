@@ -17,36 +17,26 @@ To set up the project, follow these steps:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/knowsuchagency/pdf-to-podcast.git
+   git clone https://github.com/terrylinhaochen/discussion_output.git
    cd pdf-to-podcast
    ```
 
-2. **Install dependencies:**
+2. **Create necessary directories:**
    ```bash
-   uv sync
+   mkdir -p examples
+   mkdir -p static
+   mkdir -p gradio_cached_examples/tmp
    ```
 
-## Usage
-
-1. **Set up API Key(s):**
-
-   You'll need an api key for OpenAI which you can either pass through the interface or set as the `OPENAI_API_KEY` environment variable.
-
-2. **Run the application:**
+3. **Set up environment:**
    ```bash
-   python main.py
+   # Create .env file with your API keys
+   echo "OPENAI_API_KEY=your_key_here" > .env
+   echo "MASTODON_ACCESS_TOKEN=your_token_here" >> .env
+   echo "MASTODON_INSTANCE=https://mastodon.rd.ai" >> .env
    ```
-   This will launch a Gradio interface in your web browser.
 
-3. **Upload a PDF:**
-   Upload the PDF document you want to convert into a podcast.
-
-4. **Enter OpenAI API Key:**
-   Provide your OpenAI API key in the designated textbox.
-
-5. **Generate Audio:**
-   Click the button to start the conversion process. The output will be an MP3 file containing the podcast dialogue.
-
-## License
-
-This project is licensed under the Apache 2.0 License. See the [LICENSE](LICENSE) file for more information.
+4. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
