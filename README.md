@@ -58,10 +58,14 @@ pdf-to-podcast/
 ├── pyproject.toml # Project configuration
 ├── README.md # Documentation
 ├── description.md # Gradio interface description
+├── .env # Environment variables
 ├── examples/ # Example PDF files
+│ └── .pdf # PDF examples
 ├── static/ # Static assets
-└── gradio_cached_examples/
+│ └── .png # Static images
+└── gradio_cached_examples/ # Cached examples
 └── tmp/ # Temporary audio files
+└── .mp3 # Generated audio files
 
 ## Installation
 
