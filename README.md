@@ -52,6 +52,7 @@ This project converts PDF documents into engaging podcast episodes with multiple
 
 ## Project Structure
 
+```
 pdf-to-podcast/
 ├── main.py # Main application code
 ├── requirements.txt # Python dependencies
@@ -66,6 +67,7 @@ pdf-to-podcast/
 └── gradio_cached_examples/ # Cached examples
 └── tmp/ # Temporary audio files
 └── .mp3 # Generated audio files
+```
 
 ## Installation
 
