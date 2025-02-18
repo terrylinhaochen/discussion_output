@@ -67,8 +67,22 @@ def get_mp3(text: str, voice: str, api_key: str = None) -> bytes:
             return file.getvalue()
 
 
-def generate_audio(file: str, openai_api_key: str = None) -> tuple:
+DEFAULT_PROMPT = '''Your task is to take the input text provided and turn it into an engaging, dramatic podcast dialogue featuring four distinct voices discussing interconnected books and ideas. The input text may be messy or unstructured, as it could come from various sources like PDFs or web pages. Focus on extracting key points and creating compelling conversations that reveal hidden patterns and unexpected connections.
 
+Important Formatting Rules:
+1. Do not use any bracketed placeholders or sound effects (e.g., no [Host], [Guest], or (sound effects))
+2. Match voice gender to speaker gender - use male voices for male authors and female voices for female authors
+3. Write dialogue to be read aloud directly - it will be converted to audio without modification
+4. Begin each line with the speaker's actual name
+5. Keep dialogue natural and conversational - avoid any formatting or stage directions
+6. Each speaker must introduce themselves naturally when they first enter the conversation
+
+Speaker Roles:
+- Host: Guides the conversation, draws connections, and asks probing questions
+- Main Speaker: Author of the core pattern book, leading the primary discussion
+- Guest 1 & 2: Authors of supporting books, offering complementary perspectives'''
+
+def generate_audio(file: str, prompt: str = DEFAULT_PROMPT, openai_api_key: str = None) -> tuple:
     if not (os.getenv("OPENAI_API_KEY") or openai_api_key):
         raise gr.Error("OpenAI API key is required")
 
@@ -81,85 +95,18 @@ def generate_audio(file: str, openai_api_key: str = None) -> tuple:
         model="gemini/gemini-1.5-flash-002",
         api_key="AIzaSyD2udCMKiixztGCp0gcpB2FDSlKE9s2ypE"
     )
-    def generate_dialogue(text: str) -> Dialogue:
+    def generate_dialogue(text: str, prompt: str) -> Dialogue:
         """
-        Your task is to take the input text provided and turn it into an engaging, dramatic podcast dialogue featuring four distinct voices discussing interconnected books and ideas. The input text may be messy or unstructured, as it could come from various sources like PDFs or web pages. Focus on extracting key points and creating compelling conversations that reveal hidden patterns and unexpected connections.
+        {prompt}
 
         Here is the input text you will be working with:
 
         <input_text>
         {text}
         </input_text>
-
-        Important Formatting Rules:
-        1. Do not use any bracketed placeholders or sound effects (e.g., no [Host], [Guest], or (sound effects))
-        2. Match voice gender to speaker gender - use male voices for male authors and female voices for female authors
-        3. Write dialogue to be read aloud directly - it will be converted to audio without modification
-        4. Begin each line with the speaker's actual name (e.g., "Reada:" or "John Thompson:")
-        5. Keep dialogue natural and conversational - avoid any formatting or stage directions
-        6. Each speaker must introduce themselves naturally when they first enter the conversation (e.g., "Reada: Welcome everyone, I'm Reada, your host today...")
-
-        Speaker Roles:
-        - Reada (Host): Guides the conversation, draws connections, and asks probing questions
-        - Main Speaker: Author of the core pattern book, leading the primary discussion
-        - Guest 1 & 2: Authors of supporting books, offering complementary perspectives
-
-        First, carefully read through the input text and identify the main topics, key points, and any interesting facts or anecdotes. Think about how you could present this information in a fun, engaging way that would be suitable for an audio podcast.
-
-        <scratchpad>
-        Brainstorm creative ways to structure the dialogue that:
-        1. Reveal hidden patterns in everyday experiences
-        2. Connect common situations to unexpected domains
-        3. Balance intriguing premises with practical relevance
-        4. Vary narrative approaches (evolution, analysis, revelation)
-
-        Consider using:
-        - Analogies and metaphors that bridge familiar and novel concepts
-        - Storytelling techniques that build dramatic tension
-        - Hypothetical scenarios that make abstract ideas concrete
-        - Strategic questioning that leads to moments of revelation
-        - Contrasting viewpoints that create engaging dynamics
-
-        Keep in mind that your podcast should be:
-        - Accessible to a general audience while maintaining depth
-        - Dramatically engaging while remaining informative
-        - Structured to build toward key insights
-        - Balanced between theoretical understanding and practical application
-
-        Write your brainstorming ideas and outline here, noting:
-        - Key dramatic moments and revelations
-        - Points of connection between different authors' perspectives
-        - Building blocks for narrative tension
-        - Core insights and practical takeaways
-        </scratchpad>
-
-        Now create the podcast dialogue, incorporating:
-        - Natural conversational flow between all speakers
-        - Clear character voices and perspectives
-        - Building dramatic tension and revelation
-        - Engaging explanations of complex topics
-        - Strategic integration of different viewpoints
-
-        <podcast_dialogue>
-        Write your engaging, dramatic podcast dialogue here. The conversation should:
-        - Begin with a compelling hook that connects to everyday experience
-        - Gradually reveal deeper patterns and unexpected connections
-        - Build dramatic tension through contrasting viewpoints and revelations
-        - Maintain practical relevance while exploring abstract concepts
-        - End with a natural synthesis of key insights
-
-        Make the dialogue as long and detailed as possible, while maintaining:
-        - Clear speaker identities (use real author names)
-        - Engaging conversational flow
-        - Building dramatic tension
-        - Natural integration of key concepts
-        - Practical applications and takeaways
-
-        At the end of the dialogue, have the host and guest speakers naturally summarize the main insights and takeaways from their discussion. This should flow organically from the conversation, reiterating the key points in a casual, conversational manner. Avoid making it sound like an obvious recap - the goal is to reinforce the central ideas one last time before signing off.
-        </podcast_dialogue>
         """
 
-    llm_output = generate_dialogue(text)
+    llm_output = generate_dialogue(text, prompt)
 
     audio = b""
     transcript = ""
@@ -213,18 +160,24 @@ def generate_audio(file: str, openai_api_key: str = None) -> tuple:
 
 
 demo = gr.Interface(
-    title="PDF to Podcast",
+    title="Output Generation Demo",
     description=Path("description.md").read_text(),
     fn=generate_audio,
     examples=[[str(p)] for p in Path("examples").glob("*.pdf")],
     inputs=[
         gr.File(label="PDF"),
+        gr.Textbox(
+            label="System Prompt", 
+            value=DEFAULT_PROMPT,
+            lines=10,
+            info="Edit this prompt to customize how the dialogue is generated"
+        ),
         gr.Textbox(label="OpenAI API Key", visible=not os.getenv("OPENAI_API_KEY")),
     ],
     outputs=[
         gr.Audio(label="Audio", format="mp3"),
         gr.Textbox(label="Transcript"),
-        gr.JSON(label="Mastodon Posts")  # Add JSON output for Mastodon URLs
+        gr.JSON(label="Mastodon Posts")
     ],
     allow_flagging="never",
     clear_btn=None,
