@@ -7,4 +7,4 @@ promptic
 pydantic
 pypdf
 tenacity
-"Mastodon.py>=1.8.1"
+Mastodon.py>=1.8.1
