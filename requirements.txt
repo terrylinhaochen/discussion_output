@@ -1,10 +1,9 @@
-gradio
+streamlit
 sentry-sdk
-fastapi
-loguru
 openai
 promptic
 pydantic
 pypdf
 tenacity
 Mastodon.py>=1.8.1
+python-dotenv
