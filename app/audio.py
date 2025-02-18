@@ -27,8 +27,12 @@ def process_pdf_to_audio(
     from pypdf import PdfReader
     text = "\n\n".join([page.extract_text() for page in PdfReader(pdf_file).pages])
     
-    # Generate dialogue
-    llm_output = generate_dialogue(text, prompt, gemini_api_key)
+    # Generate dialogue with explicit API key
+    llm_output = generate_dialogue(
+        text=text,
+        prompt=prompt,
+        api_key=gemini_api_key
+    )
     
     # Generate audio in parallel
     audio = b""

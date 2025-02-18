@@ -24,7 +24,10 @@ class Dialogue(BaseModel):
     dialogue: List[DialogueItem]
 
 @retry(retry=retry_if_exception_type(ValidationError))
-@llm(model="gemini/gemini-1.5-flash-002")
+@llm(
+    model="gemini/gemini-1.5-flash-002",
+    api_key=None  # We'll pass the API key dynamically
+)
 def generate_dialogue(text: str, prompt: str, api_key: str) -> Dialogue:
     """
     {prompt}
@@ -34,4 +37,7 @@ def generate_dialogue(text: str, prompt: str, api_key: str) -> Dialogue:
     <input_text>
     {text}
     </input_text>
-    """ 
+    """
+    # Set the API key for this call
+    generate_dialogue.api_key = api_key
+    return generate_dialogue.func(text=text, prompt=prompt) 

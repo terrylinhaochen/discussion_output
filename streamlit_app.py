@@ -62,8 +62,4 @@ if pdf_file and openai_api_key:
                 st.error(f"Error generating podcast: {str(e)}")
             finally:
                 # Clean up temporary file
-                pdf_path.unlink()
-
-if __name__ == "__main__":
-    st.set_option('server.address', '0.0.0.0')
-    st.set_option('server.port', 8501) 
+                pdf_path.unlink() 
