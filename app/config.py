@@ -1,5 +1,6 @@
 import os
 from dotenv import load_dotenv
+import streamlit as st
 
 load_dotenv()
 
@@ -18,8 +19,8 @@ Speaker Roles:
 - Main Speaker: Author of the core pattern book, leading the primary discussion
 - Guest 1 & 2: Authors of supporting books, offering complementary perspectives'''
 
-# Environment variables
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyD2udCMKiixztGCp0gcpB2FDSlKE9s2ypE")
-MASTODON_ACCESS_TOKEN = os.getenv("MASTODON_ACCESS_TOKEN", "bxzgUanrZ3qgXwdNJn9om4XWkcUgMRdmP3K1gUZGXig")
-MASTODON_INSTANCE = os.getenv("MASTODON_INSTANCE", "https://mastodon.rd.ai") 
+# Environment variables from Streamlit secrets
+OPENAI_API_KEY = st.secrets["OPENAI_API_KEY"]
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+MASTODON_ACCESS_TOKEN = st.secrets["MASTODON_ACCESS_TOKEN"]
+MASTODON_INSTANCE = st.secrets["MASTODON_INSTANCE"] 

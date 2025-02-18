@@ -25,12 +25,7 @@ system_prompt = st.text_area(
     help="Edit this prompt to customize how the dialogue is generated"
 )
 
-# OpenAI API key input (if not set in environment)
-openai_api_key = OPENAI_API_KEY
-if not openai_api_key:
-    openai_api_key = st.text_input("OpenAI API Key", type="password")
-
-if pdf_file and openai_api_key:
+if pdf_file:
     if st.button("Generate Podcast"):
         with st.spinner("Processing..."):
             # Save uploaded file temporarily
@@ -43,7 +38,7 @@ if pdf_file and openai_api_key:
                 audio_bytes, transcript = process_pdf_to_audio(
                     pdf_path,
                     system_prompt,
-                    openai_api_key,
+                    OPENAI_API_KEY,  # Use API key from secrets
                     GEMINI_API_KEY
                 )
 
