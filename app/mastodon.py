@@ -1,6 +1,9 @@
 import requests
-from loguru import logger
+import logging
 from app.config import MASTODON_INSTANCE, MASTODON_ACCESS_TOKEN
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def post_to_mastodon(transcript: str, title: str) -> dict:
     """Posts the podcast transcript as a thread to Mastodon"""
